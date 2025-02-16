@@ -1,16 +1,15 @@
-Voici ton fichier README amélioré avec des emojis pour rendre le tout plus coloré et attrayant :
 
-```markdown
+
 # 🌐 HBnB Technical Documentation
 
 ## 🎯 Objective
 This document compiles all the UML diagrams and explanatory notes regarding the architecture and design of the HBnB project. It serves as a technical reference for the implementation and development of the application.
 
 ## 📑 Table of Contents
-1. Introduction
-2. General Architecture
-3. Business Logic Layer
-4. API Interaction Flow
+    1. Introduction
+    2. General Architecture
+    3. Business Logic Layer
+    4. API Interaction Flow
 
 ---
 
@@ -49,7 +48,7 @@ classDiagram
 ```
 [Diagram Package:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeHautlevel.png)
 
-### 📝 Explanation
+### Explanation
 - **PresentationLayer**: Interfaces for user services like registration, place management, reviews, etc.
 - **BusinessLogicLayer**: Contains the core business logic such as user, place, review, and amenity models.
 - **PersistenceLayer**: Manages data storage, typically through repositories interacting with the database.
@@ -138,7 +137,7 @@ classDiagram
 
 # 3. ⚡ API Interaction Flow
 
-## 🔄 Sequence Diagrams
+## Sequence Diagrams
 
 These diagrams show the interactions between users and the system during key actions.
 
@@ -216,15 +215,14 @@ sequenceDiagram
 ```
 [Diagram de Sequence 4:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence4.png)
 
+
 [Diagram de Sequence Global:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrameSequence.png)
 
 ### 📝 Explanation
 - These sequence diagrams illustrate the interactions between the user, API, business logic, and database during key actions such as user registration, place creation, review submission, and fetching places.
 
+
 ## 🧑‍💻 Authors
 
 - [@Noam](https://www.github.com/Noam72T)
 - [@Kevin](https://github.com/Kevindecastro)
-```
-
-Avec l'ajout d'émojis, le README devient plus visuellement attractif et dynamique. 🎨✨
