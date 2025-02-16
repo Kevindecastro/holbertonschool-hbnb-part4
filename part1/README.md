@@ -159,6 +159,7 @@ sequenceDiagram
     BusinessLogic-->>API: Return Success/Failure
     API-->>User: Return Success/Failure
 ```
+[Diagram de Sequence 1:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence1.png)
 
 ### Creating a Place
 
@@ -176,6 +177,7 @@ sequenceDiagram
     BusinessLogic-->>API: Return Success/Failure
     API-->>User: Return Success/Failure
 ```
+[Diagram de Sequence 2:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence2.png)
 
 ### Submitting a Review
 
@@ -193,6 +195,7 @@ sequenceDiagram
     BusinessLogic-->>API: Return Success/Failure
     API-->>User: Return Success/Failure
 ```
+[Diagram de Sequence 3:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence3.png)
 
 ### Fetching List of Places
 
@@ -210,7 +213,10 @@ sequenceDiagram
     BusinessLogic-->>API: Return Places List
     API-->>User: Return List of Places
 ```
-[Diagram de Sequence:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrameSequence.png)
+[Diagram de Sequence 4:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence4.png)
+
+
+[Diagram de Sequence Global:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrameSequence.png)
 
 ### Explanation
 - These sequence diagrams illustrate the interactions between the user, API, business logic, and database during key actions such as user registration, place creation, review submission, and fetching places.
