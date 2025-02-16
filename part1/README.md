@@ -137,7 +137,7 @@ classDiagram
 
 # 3. ⚡ API Interaction Flow
 
-## Sequence Diagrams
+## 🔄 Sequence Diagrams
 
 These diagrams show the interactions between users and the system during key actions.
 
