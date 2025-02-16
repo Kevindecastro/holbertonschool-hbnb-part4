@@ -19,7 +19,7 @@ This document compiles all the UML diagrams and explanatory notes regarding the 
 
 This diagram illustrates the overall structure of the application and how the main components interact with each other.
 
-```markdown
+```
 classDiagram
     class PresentationLayer {
         <<Interface>>
@@ -61,7 +61,7 @@ classDiagram
 
 This diagram describes the main classes used in the business logic layer of the application.
 
-```markdown
+```
 classDiagram
     class User {
         +UUID id
@@ -143,7 +143,7 @@ These diagrams show the interactions between users and the system during key act
 
 ### User Authentication
 
-```markdown
+```
 sequenceDiagram
     participant User
     participant API
@@ -163,7 +163,7 @@ sequenceDiagram
 
 ### Creating a Place
 
-```markdown
+```
 sequenceDiagram
     participant User
     participant API
@@ -181,7 +181,7 @@ sequenceDiagram
 
 ### Submitting a Review
 
-```markdown
+```
 sequenceDiagram
     participant User
     participant API
@@ -199,7 +199,7 @@ sequenceDiagram
 
 ### Fetching List of Places
 
-```markdown
+```
 sequenceDiagram
     participant User
     participant API
