@@ -46,6 +46,7 @@ classDiagram
     PresentationLayer --> BusinessLogicLayer : Use (Facade Pattern)
     BusinessLogicLayer --> PersistenceLayer : Interact with (Database Operations)
 ```
+[Diagram Package:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeHautlevel.png)
 
 ### Explanation
 - **PresentationLayer**: Interfaces for user services like registration, place management, reviews, etc.
@@ -124,6 +125,7 @@ classDiagram
     Place "1" --> "*" Review : has
     Place "*" -- "*" Amenity : includes
 ```
+[Diagram de Class:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeClass.png)
 
 ### Explanation
 - **User**: Represents a user with their information and possible actions such as registration, profile updates, and account deletion.
@@ -208,6 +210,7 @@ sequenceDiagram
     BusinessLogic-->>API: Return Places List
     API-->>User: Return List of Places
 ```
+[Diagram de Sequence:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrameSequence.png)
 
 ### Explanation
 - These sequence diagrams illustrate the interactions between the user, API, business logic, and database during key actions such as user registration, place creation, review submission, and fetching places.
