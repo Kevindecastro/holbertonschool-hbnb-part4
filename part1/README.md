@@ -19,7 +19,7 @@ This document compiles all the UML diagrams and explanatory notes regarding the 
 
 This diagram illustrates the overall structure of the application and how the main components interact with each other.
 
-```mermaid
+```markdown
 classDiagram
     class PresentationLayer {
         <<Interface>>
@@ -46,7 +46,7 @@ classDiagram
     PresentationLayer --> BusinessLogicLayer : Use (Facade Pattern)
     BusinessLogicLayer --> PersistenceLayer : Interact with (Database Operations)
 ```
-![Diagram Package:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeHautlevel.png)
+[Diagram Package:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeHautlevel.png)
 
 ### Explanation
 - **PresentationLayer**: Interfaces for user services like registration, place management, reviews, etc.
@@ -61,7 +61,7 @@ classDiagram
 
 This diagram describes the main classes used in the business logic layer of the application.
 
-```mermaid
+```markdown
 classDiagram
     class User {
         +UUID id
@@ -125,7 +125,7 @@ classDiagram
     Place "1" --> "*" Review : has
     Place "*" -- "*" Amenity : includes
 ```
-![Diagram de Class:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeClass.png)
+[Diagram de Class:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeClass.png)
 
 ### Explanation
 - **User**: Represents a user with their information and possible actions such as registration, profile updates, and account deletion.
@@ -143,7 +143,7 @@ These diagrams show the interactions between users and the system during key act
 
 ### User Authentication
 
-```mermaid
+```markdown
 sequenceDiagram
     participant User
     participant API
@@ -159,11 +159,11 @@ sequenceDiagram
     BusinessLogic-->>API: Return Success/Failure
     API-->>User: Return Success/Failure
 ```
-![Diagram de Sequence 1:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence1.png)
+[Diagram de Sequence 1:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence1.png)
 
 ### Creating a Place
 
-```mermaid
+```markdown
 sequenceDiagram
     participant User
     participant API
@@ -177,11 +177,11 @@ sequenceDiagram
     BusinessLogic-->>API: Return Success/Failure
     API-->>User: Return Success/Failure
 ```
-![Diagram de Sequence 2:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence2.png)
+[Diagram de Sequence 2:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence2.png)
 
 ### Submitting a Review
 
-```mermaid
+```markdown
 sequenceDiagram
     participant User
     participant API
@@ -195,11 +195,11 @@ sequenceDiagram
     BusinessLogic-->>API: Return Success/Failure
     API-->>User: Return Success/Failure
 ```
-![Diagram de Sequence 3:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence3.png)
+[Diagram de Sequence 3:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence3.png)
 
 ### Fetching List of Places
 
-```mermaid
+```markdown
 sequenceDiagram
     participant User
     participant API
@@ -213,10 +213,10 @@ sequenceDiagram
     BusinessLogic-->>API: Return Places List
     API-->>User: Return List of Places
 ```
-![Diagram de Sequence 4:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence4.png)
+[Diagram de Sequence 4:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrammeSequence4.png)
 
 
-![Diagram de Sequence Global:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrameSequence.png)
+[Diagram de Sequence Global:](https://github.com/Noam72T/holbertonschool-hbnb/blob/main/part1/DiagrameSequence.png)
 
 ### Explanation
 - These sequence diagrams illustrate the interactions between the user, API, business logic, and database during key actions such as user registration, place creation, review submission, and fetching places.
