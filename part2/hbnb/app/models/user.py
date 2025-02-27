@@ -1,25 +1,22 @@
-from base_model import BaseModel
+from app.models.base_model import BaseModel
 import re
 
 
-class User(BaseModel):
-    """Représente un utilisateur."""
+class User:
+    id_counter = 1 
 
-    def __init__(self, first_name, last_name, email, is_admin=False):
-        super().__init__()
-        self.first_name = self.validate_name(first_name)
-        self.last_name = self.validate_name(last_name)
-        self.email = self.validate_email(email)
-        self.is_admin = is_admin
+    def __init__(self, first_name, last_name, email):
+        self.id = User.id_counter
+        User.id_counter += 1
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
 
-    def validate_name(self, name):
-        if len(name) > 50:
-            raise ValueError(
-                "Le prénom et le nom ne peuvent pas dépasser 50 caractères.")
-        return name
-
-    def validate_email(self, email):
-        email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-        if not re.match(email_regex, email):
-            raise ValueError("Email invalide.")
-        return email
+    def to_dict(self):
+        """Convertit l'utilisateur en dictionnaire pour JSON"""
+        return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email
+        }
