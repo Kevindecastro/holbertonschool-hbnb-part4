@@ -1,5 +1,6 @@
 from app.models.user import User
 from app.models.place import Place
+from app.models.amenity import Amenity
 from app.persistence.repository import InMemoryRepository
 from flask import request
 
@@ -8,7 +9,7 @@ class HBnBFacade:
         # Dépôts en mémoire pour chaque entité
         self.user_repo = InMemoryRepository()
         self.place_repo = InMemoryRepository()
-        # D'autres dépôts pour Review, Amenity peuvent être ajoutés plus tard
+        self.amenity_repo = InMemoryRepository()
 
     # --- Opérations sur les utilisateurs ---
     def create_user(self, user_data):
@@ -57,6 +58,59 @@ class HBnBFacade:
 
         except Exception as e:
             return {'error': f"An error occurred while updating the user: {str(e)}"}, 500
+        
+    # ----------- Amenities ----------- #
+
+    # --- Opérations sur les amenities ---
+    def create_amenity(self, amenity_data):
+        """Créer une nouvelle amenity"""
+        try:
+            amenity = Amenity(**amenity_data)  # Utiliser la classe Amenity
+            self.amenity_repo.add(amenity)  # Ajouter l'amenity au dépôt
+            return amenity
+        except Exception as e:
+            return {'error': f"An error occurred while creating the amenity: {str(e)}"}, 500
+
+    def get_all_amenities(self):
+        """Récupérer la liste de toutes les amenities"""
+        try:
+            return self.amenity_repo.get_all()
+        except Exception as e:
+            return {'error': f"An error occurred while fetching amenities: {str(e)}"}, 500
+
+    def get_amenity(self, amenity_id):
+        """Récupérer une amenity par ID"""
+        try:
+            return self.amenity_repo.get(amenity_id)
+        except Exception as e:
+            return {'error': f"An error occurred while fetching the amenity: {str(e)}"}, 500
+
+    def get_amenity_by_name(self, name):
+        """Récupérer une amenity par nom"""
+        try:
+            return self.amenity_repo.get_by_attribute('name', name)
+        except Exception as e:
+            return {'error': f"An error occurred while fetching amenity by name: {str(e)}"}, 500
+
+    def update_amenity(self, amenity_id, amenity_data):
+        """Mettre à jour une amenity par ID"""
+        try:
+            if not amenity_data:
+                return {'error': 'No data provided'}, 400
+
+            amenity = self.get_amenity(amenity_id)
+            if not amenity:
+                return {'error': 'Amenity not found'}, 404
+
+            # Mise à jour des données de l'amenity
+            for key, value in amenity_data.items():
+                setattr(amenity, key, value)
+
+            # Retourner l'amenity mis à jour sous forme de dictionnaire
+            return amenity.to_dict()  # Utiliser la méthode `to_dict` si l'objet le permet
+
+        except Exception as e:
+            return {'error': f"An error occurred while updating the amenity: {str(e)}"}, 500
 
     # --- Opérations sur les lieux ---
     def create_place(self, place_data):

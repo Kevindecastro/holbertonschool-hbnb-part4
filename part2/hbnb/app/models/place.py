@@ -1,7 +1,6 @@
 from app.models.base_model import BaseModel
 
 
-
 class Place(BaseModel):
     """Représente un logement disponible à la location."""
 
