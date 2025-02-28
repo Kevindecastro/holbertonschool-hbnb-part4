@@ -1,9 +1,8 @@
 from app.models.base_model import BaseModel
-import re
 
 
 class User:
-    id_counter = 1 
+    id_counter = 1
 
     def __init__(self, first_name, last_name, email):
         self.id = User.id_counter
