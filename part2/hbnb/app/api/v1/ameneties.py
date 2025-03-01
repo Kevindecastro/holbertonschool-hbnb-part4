@@ -11,6 +11,8 @@ amenity_model = api.model('Amenity', {
 })
 
 # Endpoint to manage the list of amenities
+
+
 @api.route('/')
 class AmenityList(Resource):
     @api.response(200, 'List of amenities retrieved successfully')
@@ -34,7 +36,8 @@ class AmenityList(Resource):
             amenity_data = request.get_json()
 
             # Check if the amenity already exists by name
-            existing_amenity = facade.get_amenity_by_name(amenity_data.get('name'))
+            existing_amenity = facade.get_amenity_by_name(
+                amenity_data.get('name'))
             if existing_amenity:
                 return {'error': 'Amenity already exists'}, 400
 
@@ -57,7 +60,7 @@ class AmenityList(Resource):
 
 
 # Endpoint to manage individual amenities by ID
-@api.route('/<int:amenity_id>')
+@api.route('/<string:amenity_id>')
 class AmenityResource(Resource):
     @api.response(404, 'Amenity not found')
     @api.response(200, 'Amenity details retrieved successfully')
@@ -76,7 +79,8 @@ class AmenityResource(Resource):
             }, 200
 
         except ValueError:
-            return {'error': 'Invalid amenity ID format'}, 400  # Invalid ID format
+            # Invalid ID format
+            return {'error': 'Invalid amenity ID format'}, 400
         except Exception as e:
             return {'error': f"An unexpected error occurred: {str(e)}"}, 500
 
@@ -87,4 +91,3 @@ class AmenityResource(Resource):
         """Update user by ID"""
         amenities_data = request.get_json()
         return facade.update_amenity(amenity_id, amenities_data)
-
