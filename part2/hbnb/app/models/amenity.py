@@ -1,11 +1,9 @@
-class Amenity:
-    # Variable de classe pour suivre l'ID global
-    _id_counter = 1
+import uuid
 
+class Amenity:
     def __init__(self, name, description=None):
-        # Utilisation de la variable de classe pour définir l'ID
-        self.id = Amenity._id_counter
-        Amenity._id_counter += 1  # Incrémenter l'ID pour la prochaine instance
+        # Générer un UUID unique pour chaque nouvelle instance
+        self.id = str(uuid.uuid4())  # ID sous forme de chaîne UUID
         self.name = name
         self.description = description
 

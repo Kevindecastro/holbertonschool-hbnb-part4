@@ -1,12 +1,8 @@
-from app.models.base_model import BaseModel
-
+import uuid
 
 class User:
-    id_counter = 1
-
     def __init__(self, first_name, last_name, email):
-        self.id = User.id_counter
-        User.id_counter += 1
+        self.id = str(uuid.uuid4())  # Génère un UUID unique sous forme de chaîne
         self.first_name = first_name
         self.last_name = last_name
         self.email = email

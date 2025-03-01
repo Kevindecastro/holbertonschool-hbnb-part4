@@ -1,8 +1,11 @@
+from math import e
+import uuid
 from app.models.user import User
 from app.models.place import Place
 from app.models.amenity import Amenity
 from app.persistence.repository import InMemoryRepository
-from flask import request
+from flask import jsonify, request
+
 
 class HBnBFacade:
     def __init__(self):
@@ -13,53 +16,33 @@ class HBnBFacade:
 
     # --- Opérations sur les utilisateurs ---
     def create_user(self, user_data):
+        """Créer un nouvel utilisateur"""
         user = User(**user_data)
-        self.user_repo.add(user)
+        self.user_repo.add(user)  
         return user
 
-    def get_all_users(self):
-        try:
-            return self.user_repo.get_all()
-        except Exception as e:
-            return {'error': f"An error occurred while fetching users: {str(e)}"}, 500
-
     def get_user(self, user_id):
-        try:
-            return self.user_repo.get(user_id)
-        except Exception as e:
-            return {'error': f"An error occurred while fetching the user: {str(e)}"}, 500
+        return self.user_repo.get(user_id)
 
     def get_user_by_email(self, email):
-        try:
-            return self.user_repo.get_by_attribute('email', email)
-        except Exception as e:
-            return {'error': f"An error occurred while fetching user by email: {str(e)}"}, 500
+        return self.user_repo.get_by_attribute("email", email)
 
     def update_user(self, user_id, user_data):
-        """Update user details by ID"""
-        try:
-            if not user_data:
-                return {'error': 'No data provided'}, 400
-
-            user = self.get_user(user_id)
-            if not user:
-                return {'error': 'User not found'}, 404
-
-            # Mise à jour des informations utilisateur
-            for key, value in user_data.items():
-                setattr(user, key, value)
-
-            return {
-                'id': user.id,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email
-            }, 200
-
-        except Exception as e:
-            return {'error': f"An error occurred while updating the user: {str(e)}"}, 500
-        
-    # ----------- Amenities ----------- #
+        """Met à jour les informations de l'utilisateur"""
+        user = self.user_repo.get(user_id)
+        if not user:
+            return None
+    
+        if 'first_name' in user_data:
+            user.first_name = user_data['first_name']
+        if 'last_name' in user_data:
+            user.last_name = user_data['last_name']
+        if 'email' in user_data:
+            user.email = user_data['email']
+    
+        self.user_repo.update(user)
+    
+        return user
 
     # --- Opérations sur les amenities ---
     def create_amenity(self, amenity_data):
@@ -72,28 +55,28 @@ class HBnBFacade:
             return {'error': f"An error occurred while creating the amenity: {str(e)}"}, 500
 
     def get_all_amenities(self):
-        """Récupérer la liste de toutes les amenities"""
+        """Retourne toutes les amenities"""
         try:
             return self.amenity_repo.get_all()
         except Exception as e:
             return {'error': f"An error occurred while fetching amenities: {str(e)}"}, 500
 
     def get_amenity(self, amenity_id):
-        """Récupérer une amenity par ID"""
+        """Retourne une amenity par ID"""
         try:
             return self.amenity_repo.get(amenity_id)
         except Exception as e:
             return {'error': f"An error occurred while fetching the amenity: {str(e)}"}, 500
 
     def get_amenity_by_name(self, name):
-        """Récupérer une amenity par nom"""
+        """Retourne une amenity par nom"""
         try:
             return self.amenity_repo.get_by_attribute('name', name)
         except Exception as e:
             return {'error': f"An error occurred while fetching amenity by name: {str(e)}"}, 500
 
     def update_amenity(self, amenity_id, amenity_data):
-        """Mettre à jour une amenity par ID"""
+        """Met à jour une amenity par ID"""
         try:
             if not amenity_data:
                 return {'error': 'No data provided'}, 400
@@ -107,102 +90,81 @@ class HBnBFacade:
                 setattr(amenity, key, value)
 
             # Retourner l'amenity mis à jour sous forme de dictionnaire
-            return amenity.to_dict()  # Utiliser la méthode `to_dict` si l'objet le permet
+            return amenity.to_dict()
 
         except Exception as e:
             return {'error': f"An error occurred while updating the amenity: {str(e)}"}, 500
 
     # --- Opérations sur les lieux ---
     def create_place(self, place_data):
-        """Créer un lieu avec validation des attributs"""
-        try:
-            price = place_data.get('price')
-            latitude = place_data.get('latitude')
-            longitude = place_data.get('longitude')
+        if place_data["price"] < 0:
+            raise ValueError("Price must be a non-negative value.")
+        if not (-90 <= place_data["latitude"] <= 90):
+            raise ValueError("Latitude must be between -90 and 90.")
+        if not (-180 <= place_data["longitude"] <= 180):
+            raise ValueError("Longitude must be between -180 and 180.")
 
-            # Validation des prix, latitude et longitude
-            if price is not None and price < 0:
-                raise ValueError("Le prix doit être positif ou nul.")
-            if latitude is not None and not (-90 <= latitude <= 90):
-                raise ValueError("La latitude doit être comprise entre -90 et 90.")
-            if longitude is not None and not (-180 <= longitude <= 180):
-                raise ValueError("La longitude doit être comprise entre -180 et 180.")
+        owner = self.user_repo.get(place_data["owner_id"])
+        if not owner:
+            raise ValueError("Owner not found.")
 
-            # Vérification du propriétaire
-            owner_id = place_data.get('owner_id')
-            owner = self.user_repo.get(owner_id)
-            if not owner:
-                raise ValueError("Propriétaire non trouvé.")
+        place_obj = Place(
+            title=place_data["title"],
+            description=place_data.get("description", ""),
+            price=place_data["price"],
+            latitude=place_data["latitude"],
+            longitude=place_data["longitude"],
+            owner=owner
+        )
+        place_obj.amenities = [] if not hasattr(place_obj, "amenities") else place_obj.amenities
 
-            # Créer le lieu
-            place = Place(
-                title=place_data.get('title'),
-                description=place_data.get('description', ''),
-                price=price,
-                latitude=latitude,
-                longitude=longitude,
-                owner=owner,
-                amenities=place_data.get('amenities', [])
-            )
-            self.place_repo.add(place)
-            return place
+        if "amenities" in place_data:
+            amenities = []
+            for amenity_id in place_data["amenities"]:
+                amenity_obj = self.amenity_repo.get(amenity_id)
+                if amenity_obj:
+                    amenities.append(amenity_obj)
+            place_obj.amenities = amenities
 
-        except ValueError as ve:
-            return {'error': str(ve)}, 400
-        except Exception as e:
-            return {'error': f"An error occurred while creating the place: {str(e)}"}, 500
+        self.place_repo.add(place_obj)
+        return place_obj
 
     def get_place(self, place_id):
-        try:
-            return self.place_repo.get(place_id)
-        except Exception as e:
-            return {'error': f"An error occurred while fetching the place: {str(e)}"}, 500
+        place = self.place_repo.get(place_id)
+        if not place:
+            raise ValueError("Place not found.")
+        return place
 
     def get_all_places(self):
-        try:
-            return self.place_repo.get_all()
-        except Exception as e:
-            return {'error': f"An error occurred while fetching places: {str(e)}"}, 500
+        return self.place_repo.get_all()
 
-    def update_place(self, place_id, place_data):
-        """Mettre à jour un lieu par ID"""
-        try:
-            place = self.place_repo.get(place_id)
-            if not place:
-                return {'error': 'Place not found'}, 404
+    def update_place(self, place_id, data):
+        place = self.place_repo.get(place_id)
+        if not place:
+            return None
+        if "price" in data and data["price"] < 0:
+            raise ValueError("Price must be a non-negative value.")
+        if "latitude" in data and not (-90 <= data["latitude"] <= 90):
+            raise ValueError("Latitude must be between -90 and 90.")
+        if "longitude" in data and not (-180 <= data["longitude"] <= 180):
+            raise ValueError("Longitude must be between -180 and 180.")
 
-            # Validation des nouveaux attributs
-            if 'price' in place_data and place_data['price'] < 0:
-                raise ValueError("Le prix doit être positif ou nul.")
-            if 'latitude' in place_data and not (-90 <= place_data['latitude'] <= 90):
-                raise ValueError("La latitude doit être comprise entre -90 et 90.")
-            if 'longitude' in place_data and not (-180 <= place_data['longitude'] <= 180):
-                raise ValueError("La longitude doit être comprise entre -180 et 180.")
+        if "owner_id" in data:
+            new_owner = self.user_repo.get(data["owner_id"])
+            if not new_owner:
+                raise ValueError("Owner not found.")
+        place.owner = new_owner
+        data.pop("owner_id")
 
-            # Mise à jour de l'identifiant du propriétaire si modifié
-            if 'owner_id' in place_data:
-                owner = self.user_repo.get(place_data['owner_id'])
-                if not owner:
-                    raise ValueError("Propriétaire non trouvé.")
-                place_data['owner'] = owner
-                del place_data['owner_id']  # Supprimer l'ID du propriétaire pour éviter un conflit
+        if "amenities" in data:
+            new_amenities = []
+            for amenity_id in data["amenities"]:
+                amenity_obj = self.amenity_repo.get(amenity_id)
+                if amenity_obj:
+                    new_amenities.append(amenity_obj)
+            place.amenities = new_amenities
+            data.pop("amenities")
 
-            # Mise à jour de l'objet place avec les nouvelles données
-            for key, value in place_data.items():
-                setattr(place, key, value)
-
-            return {
-                'id': place.id,
-                'title': place.title,
-                'description': place.description,
-                'price': place.price,
-                'latitude': place.latitude,
-                'longitude': place.longitude,
-                'owner': place.owner.id,
-                'amenities': place.amenities
-            }, 200
-
-        except ValueError as ve:
-            return {'error': str(ve)}, 400
-        except Exception as e:
-            return {'error': f"An error occurred while updating the place: {str(e)}"}, 500
+        place.update(data)
+        self.place_repo.add(place)
+        return place 
