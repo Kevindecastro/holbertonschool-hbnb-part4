@@ -1,8 +1,10 @@
+from datetime import datetime
 from math import e
 import uuid
 from app.models.user import User
 from app.models.place import Place
 from app.models.amenity import Amenity
+from app.models.review import Review
 from app.persistence.repository import InMemoryRepository
 from flask import jsonify, request
 
@@ -13,8 +15,9 @@ class HBnBFacade:
         self.user_repo = InMemoryRepository()
         self.place_repo = InMemoryRepository()
         self.amenity_repo = InMemoryRepository()
+        self.review_repo = InMemoryRepository()
 
-    # --- Opérations sur les utilisateurs ---
+    # --- Opérations sur les utilisateurs --- #
     def create_user(self, user_data):
         """Créer un nouvel utilisateur"""
         user = User(**user_data)
@@ -44,7 +47,7 @@ class HBnBFacade:
     
         return user
 
-    # --- Opérations sur les amenities ---
+    # --- Opérations sur les amenities --- #
     def create_amenity(self, amenity_data):
         """Créer une nouvelle amenity"""
         try:
@@ -95,7 +98,7 @@ class HBnBFacade:
         except Exception as e:
             return {'error': f"An error occurred while updating the amenity: {str(e)}"}, 500
 
-    # --- Opérations sur les lieux ---
+    # --- Opérations sur les lieux --- #
     def create_place(self, place_data):
         if place_data["price"] < 0:
             raise ValueError("Price must be a non-negative value.")
@@ -168,3 +171,43 @@ class HBnBFacade:
         place.update(data)
         self.place_repo.add(place)
         return place 
+
+    # --- Opérations sur les review --- #
+    def create_review(self, review_data):
+            """Create a new review"""
+            review = Review(
+                text=review_data['text'],
+                rating=review_data['rating'],
+                user_id=review_data['user_id'],
+                place_id=review_data['place_id']
+            )
+            self.review_repo.add(review)
+            return review
+
+    def get_all_reviews(self):
+            """Retrieve all reviews"""
+            return self.review_repo.get_all()
+
+    def get_review(self, review_id):
+            """Retrieve a review by ID"""
+            return self.review_repo.get(review_id)
+
+    def update_review(self, review_id, review_data):
+            """Update a review by ID"""
+            review = self.review_repo.get(review_id)
+            if not review:
+                return None
+            for key, value in review_data.items():
+                if hasattr(review, key):
+                    setattr(review, key, value)
+            review.updated_at = datetime.utcnow()
+            self.review_repo.update(review)
+            return review
+
+    def delete_review(self, review_id):
+            """Delete a review by ID"""
+            return self.review_repo.delete(review_id)
+
+    def get_reviews_by_place(self, place_id):
+            """Retrieve all reviews for a specific place"""
+            return [review for review in self.review_repo.get_all() if review.place_id == place_id]
