@@ -51,15 +51,19 @@ hbnb/
 │   │   ├── users.py
 │   │   ├── places.py
 │   │   ├── reviews.py
-│   │   ├── amenities.py
-├── repository/                 # In-Memory Persistence Layer
+|   │   ├── amenities.py
+|── services/
+|   ├── __init__.py
+|   ├──facade.py
+├── persistence/                 # In-Memory Persistence Layer
 │   ├── __init__.py
-│   ├── storage.py
+│   ├── repositoru.py
 ├── tests/                      # API Testing
 │   ├── test_users.py
 │   ├── test_places.py
 │   ├── test_reviews.py
 │   ├── test_amenities.py
+├── config.py
 ├── requirements.txt
 ├── README.md
 ```
