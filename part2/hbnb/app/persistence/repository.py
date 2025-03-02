@@ -50,4 +50,7 @@ class InMemoryRepository:
         return False
 
     def get_all(self):
-        return list(self.data.values())
+        # Return all items stored in the repository
+        return list(self.data.values())  # Use values() to get all items
+
+    
