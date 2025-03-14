@@ -1,17 +1,19 @@
 import os
-from datetime import timedelta  # Add this import
-
 
 class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')  # Ensure SECRET_KEY is set for security
+    SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')
+    ADMIN_SECRET_CODE = 'admin123'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///app.db'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = False
-    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'Voicimonsecret')  # Secret key for JWT
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)  # Expiry time for the access token
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'  # SQLite database (use appropriate URI for other DBs)
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+class TestingConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+
 
 config = {
     'development': DevelopmentConfig,

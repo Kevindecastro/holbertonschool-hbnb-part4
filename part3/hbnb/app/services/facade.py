@@ -6,7 +6,9 @@ from app.models.place import Place
 from app.models.amenity import Amenity
 from app.models.review import Review
 from app.persistence.repository import InMemoryRepository
-from flask import jsonify, request
+from app.extensions import bcrypt
+from app.extensions import jwt
+
 
 
 class HBnBFacade:
@@ -20,6 +22,7 @@ class HBnBFacade:
     # --- Opérations sur les utilisateurs --- #
     def create_user(self, user_data):
         """Créer un nouvel utilisateur"""
+        user_data.setdefault('is_admin', False)
         user = User(**user_data)
         self.user_repo.add(user)  
         return user
@@ -49,6 +52,11 @@ class HBnBFacade:
         """Récupère tous les utilisateurs"""
         return self.user_repo.get_all()
 
+    def hash_password(self, password):
+        return bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def verify_password(hashed_password, password):
+        return bcrypt.check_password_hash(hashed_password, password)
     # --- Opérations sur les amenities --- #
     def create_amenity(self, amenity_data):
         """Créer une nouvelle amenity"""
@@ -151,36 +159,33 @@ class HBnBFacade:
     
         return place
 
+    
     def get_all_places(self):
+        """Récupérer tous les lieux"""
         return self.place_repo.get_all()
 
     def update_place(self, place_id, place_data):
+        """Mettre à jour un lieu"""
         place = self.place_repo.get(place_id)
         if not place:
-            return None
-        # Validation si de nouveaux attributs sont fournis
-        if 'price' in place_data:
-            if place_data['price'] < 0:
-                raise ValueError("Le prix doit être positif ou nul.")
-        if 'latitude' in place_data:
-            if not (-90 <= place_data['latitude'] <= 90):
-                raise ValueError("La latitude doit être comprise entre -90 et 90.")
-        if 'longitude' in place_data:
-            if not (-180 <= place_data['longitude'] <= 180):
-                raise ValueError("La longitude doit être comprise entre -180 et 180.")
-        # Si l'identifiant du propriétaire est mis à jour, vérifiez-le et remplacez-le par l'objet owner
-        if 'owner_id' in place_data:
-            owner = self.user_repo.get(place_data['owner_id'])
-            if not owner:
-                raise ValueError("Propriétaire non trouvé.")
-            place_data['owner'] = owner
-            del place_data['owner_id']
-        place.update(place_data)
+            return None  # Le lieu n'existe pas
+
+        # Validation des données
+        if 'price' in place_data and place_data['price'] < 0:
+            raise ValueError("Le prix doit être positif ou nul.")
+        if 'latitude' in place_data and not (-90 <= place_data['latitude'] <= 90):
+            raise ValueError("La latitude doit être comprise entre -90 et 90.")
+        if 'longitude' in place_data and not (-180 <= place_data['longitude'] <= 180):
+            raise ValueError("La longitude doit être comprise entre -180 et 180.")
+
+        # Mettre à jour les attributs du lieu
+        for key, value in place_data.items():
+            setattr(place, key, value)
+
+        # Mettre à jour le lieu dans le repository
+        self.place_repo.update(place)
         return place
         
-
-
-
     # --- Opérations sur les reviews --- #
     def is_valid_uuid(self, uuid_to_test):
         """Check if a string is a valid UUID."""

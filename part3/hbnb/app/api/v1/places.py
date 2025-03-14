@@ -1,5 +1,6 @@
 from flask_restx import Namespace, Resource, fields, abort
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('places', description='Place operations')
 
@@ -76,8 +77,19 @@ class PlaceResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
         """ Update a place's information """
-        place_data = api.payload
-        updated_place = facade.update_place(place_id, place_data)
-        if not updated_place:
-            abort(404, message="Place not found")
-        return format_place(updated_place), 200
+        current_user = get_jwt_identity()
+        place = facade.get_place(place_id)
+
+        # Vérifier si l'utilisateur est le propriétaire du lieu
+        if place.owner != current_user:
+            return {'error': 'Unauthorized action'}, 403
+
+        # Mettre à jour les attributs du lieu
+        data = api.payload
+        for key, value in data.items():
+            setattr(place, key, value)
+
+        # Mettre à jour le lieu dans le repository
+        facade.update_place(place)
+        return format_place(place), 200
+

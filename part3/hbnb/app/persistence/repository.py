@@ -32,9 +32,13 @@ class InMemoryRepository:
         self.data = {}
 
     def add(self, item):
+        if not hasattr(item, 'id'):
+            raise ValueError("Item must have an 'id' attribute")
+        print(f"Adding item with ID: {item.id}")  # Debug
         self.data[item.id] = item
 
     def get(self, item_id):
+        print(f"Looking for item with ID: {item_id}")  # Debug
         return self.data.get(item_id)
 
     def get_by_attribute(self, attr, value):
@@ -45,12 +49,13 @@ class InMemoryRepository:
 
     def update(self, item):
         if item.id in self.data:
+            print(f"Updating item with ID: {item.id}")  # Debug
             self.data[item.id] = item
             return True
+        print(f"Item with ID {item.id} not found")  # Debug
         return False
 
     def get_all(self):
-        # Return all items stored in the repository
-        return list(self.data.values())  # Use values() to get all items
-
+        print(f"Current data in repository: {self.data}")  # Debug
+        return list(self.data.values())
     
