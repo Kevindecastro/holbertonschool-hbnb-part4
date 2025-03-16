@@ -1,6 +1,7 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('reviews', description='Review operations')
 
@@ -13,6 +14,7 @@ review_model = api.model('Review', {
 
 @api.route('/')
 class ReviewList(Resource):
+    @jwt_required() 
     @api.expect(review_model)
     @api.response(201, 'Review successfully created')
     @api.response(400, 'Invalid input data')
@@ -42,6 +44,7 @@ class ReviewList(Resource):
 
 @api.route('/<string:review_id>')
 class ReviewResource(Resource):
+    @jwt_required() 
     @api.response(200, 'Review details retrieved successfully')
     @api.response(404, 'Review not found')
     def get(self, review_id):
@@ -52,6 +55,7 @@ class ReviewResource(Resource):
         return review.to_dict(), 200
 
     @api.expect(review_model)
+    @jwt_required() 
     @api.response(200, 'Review updated successfully')
     @api.response(404, 'Review not found')
     @api.response(400, 'Invalid input data')
@@ -70,6 +74,7 @@ class ReviewResource(Resource):
 
 @api.route('/places/<string:place_id>/reviews')
 class PlaceReviewList(Resource):
+    @jwt_required()
     @api.response(200, 'List of reviews for the place retrieved successfully')
     @api.response(404, 'Place not found')
     def get(self, place_id):

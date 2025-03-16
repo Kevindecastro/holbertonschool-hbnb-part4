@@ -1,33 +1,33 @@
 from uuid import uuid4
+from sqlalchemy import Column, String, Text, Float, ForeignKey
+from sqlalchemy.orm import relationship
+from app.extensions import db
+from .base_model import BaseModel
 
-class Amenity:
-    def __init__(self, name):
-        self.name = name
+# Table d'association pour la relation plusieurs-à-plusieurs entre Place et Amenity
+place_amenity = db.Table(
+    'place_amenity',
+    db.Column('place_id', db.String(36), db.ForeignKey('places.id'), primary_key=True),
+    db.Column('amenity_id', db.String(36), db.ForeignKey('amenities.id'), primary_key=True)
+)
 
-class Place:
-    def __init__(self, title, description, price, latitude, longitude, owner, amenities=None):
-        self.id = str(uuid4())
-        self.title = title
-        self.description = description
-        self.price = price
-        self.latitude = latitude
-        self.longitude = longitude
-        self.owner = owner
-        self.reviews = []
-        self.amenities = amenities or []  # Liste d'objets Amenity
+class Place(db.Model):
+    __tablename__ = 'places'
 
-    def add_review(self, review):
-        """Add a review to the place"""
-        self.reviews.append(review)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid4()))
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    price = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
-    def add_amenity(self, amenity):
-        """Add an amenity to the place"""
-        if not isinstance(amenity, Amenity):
-            raise ValueError("Amenity must be an instance of Amenity")
-        self.amenities.append(amenity)
+    # Relations
+    owner = db.relationship("User", back_populates="places")  # Relation avec User
+    reviews = db.relationship("Review", back_populates="place", cascade="all, delete-orphan")  # Relation avec Review
+    amenities = db.relationship("Amenity", secondary=place_amenity, backref="places")  # Relation avec Amenity via table d'association
 
     def to_dict(self):
-        """Convertir l'objet Place en dictionnaire"""
         return {
             'id': self.id,
             'title': self.title,
@@ -35,7 +35,7 @@ class Place:
             'price': self.price,
             'latitude': self.latitude,
             'longitude': self.longitude,
-            'owner_id': self.owner,
+            'owner_id': self.owner_id,
             'reviews': [review.to_dict() for review in self.reviews],
-            'amenities': [a.name for a in self.amenities]  # Supposons que `a` est un objet Amenity
+            'amenities': [amenity.name for amenity in self.amenities]
         }

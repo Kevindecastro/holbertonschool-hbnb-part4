@@ -2,6 +2,8 @@ from uuid import UUID
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from app.models.user import User
 
 api = Namespace('users', description='User operations')
 
@@ -34,6 +36,7 @@ class UserList(Resource):
     def post(self):
         """Create a new user"""
         try:
+            new_user = User(**user_data)
             user_data = request.get_json()
     
             # Vérifier si l'email existe déjà
@@ -86,7 +89,7 @@ class UserResource(Resource):
             'last_name': user.last_name,
             'email': user.email
         }, 200
-
+        
     @api.expect(user_model)
     @api.response(200, 'User details updated successfully')
     @api.response(400, 'Invalid input data')

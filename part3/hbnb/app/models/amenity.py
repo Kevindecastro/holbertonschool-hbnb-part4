@@ -1,14 +1,16 @@
-import uuid
+from uuid import uuid4
+from sqlalchemy import Column, String, Text
+from app.extensions import db
+from .base_model import BaseModel
 
-class Amenity:
-    def __init__(self, name, description=None):
-        # Générer un UUID unique pour chaque nouvelle instance
-        self.id = str(uuid.uuid4())  # ID sous forme de chaîne UUID
-        self.name = name
-        self.description = description
+class Amenity(db.Model):
+    __tablename__ = 'amenities'
+
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid4()))
+    name = db.Column(db.String(255), nullable=False, unique=True)
+    description = db.Column(db.Text, nullable=True)
 
     def to_dict(self):
-        """Retourner les informations de l'amenity sous forme de dictionnaire"""
         return {
             'id': self.id,
             'name': self.name,

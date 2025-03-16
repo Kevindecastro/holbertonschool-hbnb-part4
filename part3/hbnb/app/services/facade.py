@@ -5,19 +5,21 @@ from app.models.user import User
 from app.models.place import Place
 from app.models.amenity import Amenity
 from app.models.review import Review
-from app.persistence.repository import InMemoryRepository
+from app.persistence.repository import SQLAlchemyRepository
 from app.extensions import bcrypt
 from app.extensions import jwt
+from app.extensions import db
+from app.persistence.user_repository import UserRepository
 
 
 
 class HBnBFacade:
     def __init__(self):
         # Dépôts en mémoire pour chaque entité
-        self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
+        self.user_repo = UserRepository()
+        self.place_repo = SQLAlchemyRepository(Place)
+        self.amenity_repo = SQLAlchemyRepository(Amenity)
+        self.review_repo = SQLAlchemyRepository(Review)
 
     # --- Opérations sur les utilisateurs --- #
     def create_user(self, user_data):

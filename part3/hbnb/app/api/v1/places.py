@@ -44,6 +44,7 @@ def format_place(place_obj):
 
 @api.route('/')
 class PlaceList(Resource):
+    @jwt_required() 
     @api.expect(place_model)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
@@ -62,6 +63,7 @@ class PlaceList(Resource):
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):
+    @jwt_required() 
     @api.response(200, 'Place details retrieved successfully')
     @api.response(404, 'Place not found')
     def get(self, place_id):
@@ -72,14 +74,20 @@ class PlaceResource(Resource):
         return format_place(place_obj), 200
 
     @api.expect(place_model)
+    @jwt_required() 
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
         """ Update a place's information """
         current_user = get_jwt_identity()
-        place = facade.get_place(place_id)
 
+        is_admin = current_user.get('is_admin', False)
+        user_id = current_user.get('id')
+        
+        place = facade.get_place(place_id)
+        if not is_admin and place.owner_id != user_id:
+            return {'error': 'Unauthorized action'}, 403
         # Vérifier si l'utilisateur est le propriétaire du lieu
         if place.owner != current_user:
             return {'error': 'Unauthorized action'}, 403
