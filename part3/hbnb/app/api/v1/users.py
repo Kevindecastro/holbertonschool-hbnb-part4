@@ -36,9 +36,8 @@ class UserList(Resource):
     def post(self):
         """Create a new user"""
         try:
-            new_user = User(**user_data)
             user_data = request.get_json()
-    
+            
             # Vérifier si l'email existe déjà
             existing_user = facade.get_user_by_email(user_data.get('email'))
             if existing_user:
@@ -72,7 +71,7 @@ class UserList(Resource):
     
         except Exception as e:
             return {'error': f"An error occurred while creating the user: {str(e)}"}, 500
-
+    
 
 @api.route('/<string:user_id>')
 class UserResource(Resource):
