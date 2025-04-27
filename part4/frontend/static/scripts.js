@@ -455,7 +455,17 @@ async function submitReview(event, formId) {
     if (!form) return;
     
     const text = form.querySelector('[name="text"]').value;
+    if (text.length < 20) {
+        showError('Review text must be at least 20 characters long.');
+        return;
+    }
+
     const rating = form.querySelector('[name="rating"]').value;
+    if (!rating) {
+        showError('Please select a rating.');
+        return;
+    }
+
     const token = getCookie('token');
     
     try {

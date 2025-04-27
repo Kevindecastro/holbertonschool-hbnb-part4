@@ -371,6 +371,7 @@ button:disabled {
 
 .place-info {
   padding: var(--space-md);
+  display: grid;
 }
 
 .place-title {
@@ -560,6 +561,15 @@ footer {
 }
 
 /* ============================================== */
+/* CHAMPS INVALIDES                           */
+/* ============================================== */
+.form-group input:invalid,
+.form-group textarea:invalid {
+    border-color: #ff2a2a;
+    background-color: #FFEBEE;
+}
+
+/* ============================================== */
 /* MEDIA QUERIES - RESPONSIVE                     */
 /* ============================================== */
 @media (max-width: 1024px) {
@@ -610,6 +620,11 @@ footer {
 }
 
 @media (max-width: 480px) {
+  .place-card {
+    width: 100%;
+    margin-bottom: var(--space-md);
+  }
+
   .places-container {
     grid-template-columns: 1fr;
   }
@@ -618,12 +633,31 @@ footer {
     transform: translateY(-4px);
   }
   
+  .filter-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #price-filter {
+    width: 80%;
+    margin: var(--space-sm) auto;
+  }
+
   .auth-form, .review-form {
     padding: var(--space-md);
     box-shadow: none;
+    margin: 0 var(--space-sm);
   }
   
   .form-container {
     padding: 0;
   }
+
+  .place-description {
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 }
