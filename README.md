@@ -1,145 +1,211 @@
-# HBnB - Part 2: Business Logic and API Implementation
+# HBnB - Simple Web Client
 
-## Table of Contents
-- [Project Overview](#project-overview)
-- [Objectives](#objectives)
-- [Project Structure](#project-structure)
-- [Business Logic Implementation](#business-logic-implementation)
-- [API Endpoints](#api-endpoints)
-- [Testing and Validation](#testing-and-validation)
-- [Recommended Resources](#recommended-resources)
-- [How to Run the Project](#how-to-run-the-project)
+> Part 4 - Frontend Development  
 
-## Project Overview
-In this phase of the HBnB Project, we implement the business logic and API endpoints using Python and Flask. The focus is on setting up the core functionality, creating and managing users, places, reviews, and amenities, while adhering to best practices in API design.
+## Description
 
-This part does not include JWT authentication and role-based access control, which will be addressed in the next phase. The service layer is built using Flask and `flask-restx` to create RESTful APIs.
+HBnB - Simple Web Client est la quatrième phase du projet HBnB.  
+Cette partie se concentre sur le développement front-end d'une application interactive connectée aux services d'API back-end développés dans les parties précédentes.  
+Le projet utilise **HTML5**, **CSS3**, et **JavaScript ES6** pour créer une interface dynamique et moderne.
 
-## Objectives
-By the end of this project, you should be able to:
+---
 
-1. **Set Up the Project Structure:**
-   - Organize the project into a modular architecture.
-   - Create necessary packages for the Presentation and Business Logic layers.
-2. **Implement the Business Logic Layer:**
-   - Develop core classes: `User`, `Place`, `Review`, `Amenity`.
-   - Implement relationships between entities.
-   - Apply the facade pattern to simplify layer communication.
-3. **Build RESTful API Endpoints:**
-   - Implement CRUD operations for Users, Places, Reviews, and Amenities.
-   - Use `flask-restx` for API documentation.
-   - Implement data serialization for nested relationships.
-4. **Test and Validate the API:**
-   - Ensure endpoints function correctly and handle edge cases.
-   - Use Postman or cURL for testing.
+## Objectifs
 
-## Project Structure
+- Développer une interface utilisateur conviviale respectant les spécifications du design.
+- Implémenter la connexion au back-end via AJAX/Fetch API.
+- Assurer une gestion efficace et sécurisée des données client-side.
+- Appliquer des pratiques modernes de développement web.
+
+---
+
+## Technologies Utilisées
+
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+- Fetch API
+- Cookies pour la gestion de session
+- Responsive Web Design
+
+---
+
+## Fonctionnalités
+
+### 🖌️ Design
+
+- Création des pages suivantes :
+  - Login
+  - Liste des lieux
+  - Détails d’un lieu
+  - Ajouter un avis
+- Respect du design fourni, avec flexibilité sur les couleurs, polices et images.
+
+### 🔑 Authentification
+
+- Formulaire de connexion utilisant l'API.
+- Stockage du token JWT dans les cookies.
+- Redirection de l'utilisateur après connexion.
+
+### 🏡 Liste des lieux
+
+- Affichage dynamique des lieux récupérés via API.
+- Filtrage client-side des lieux selon le prix sélectionné.
+- Affichage du bouton de connexion seulement si l'utilisateur n'est pas authentifié.
+
+### 🏠 Détails d’un lieu
+
+- Vue détaillée d'un lieu incluant nom, description, prix, commodités et avis.
+- Affichage conditionnel du formulaire pour ajouter un avis si l'utilisateur est connecté.
+
+### 📝 Ajouter un avis
+
+- Formulaire pour publier un avis sur un lieu spécifique.
+- Accessibilité réservée aux utilisateurs authentifiés.
+- Gestion des soumissions et retours d'erreur via API.
+
+---
+
+## Installation et Lancement
+
+1. **Cloner ce repository :**
+
+```bash
+git clone https://github.com/Kevindecastro/holbertonschool-hbnb-part4.git
+cd holbertonschool-hbnb-part4/part4
+```
+
+2. **Configurer l'API back-end :**  
+S'assurer que l'API est configurée pour accepter les requêtes **CORS** depuis le front-end.
+
+3. **Ouvrir le client Web :**
+
+Tu peux simplement ouvrir les fichiers HTML localement, ou utiliser un serveur local pour éviter certains problèmes de CORS.
+
+```bash
+# Exemple avec Python
+python3 -m http.server
+```
+
+4. **Naviguer vers** `http://localhost:5000` dans ton navigateur.
+
+
+## Pages Disponibles
+
+| Page            | Fichier             | Description |
+|-----------------|----------------------|-------------|
+| Page de Connexion | `login.html`         | Connexion de l'utilisateur |
+| Liste des Lieux | `index.html`          | Affichage de tous les lieux |
+| Détail d’un Lieu | `place.html`          | Informations détaillées d'un lieu |
+| Ajouter un Avis | `add_review.html`     | Formulaire pour ajouter un avis |
+
+---
+
+## Architecture des Fichiers
+
 ```
 hbnb/
-├── run.py                     # Main entry point
-├── models/                    # Business Logic Layer
-│   ├── __init__.py
-│   ├── base_model.py
-│   ├── user.py
-│   ├── place.py
-│   ├── review.py
-│   ├── amenity.py
-├── api/                        # Presentation Layer
-│   ├── __init__.py
-│   ├── v1/
-│   │   ├── __init__.py
-│   │   ├── users.py
-│   │   ├── places.py
-│   │   ├── reviews.py
-|   │   ├── amenities.py
-|── services/
-|   ├── __init__.py
-|   ├──facade.py
-├── persistence/                 # In-Memory Persistence Layer
-│   ├── __init__.py
-│   ├── repositoru.py
-├── tests/                      # API Testing
-│   ├── test_users.py
-│   ├── test_places.py
-│   ├── test_reviews.py
-│   ├── test_amenities.py
-├── config.py
-├── requirements.txt
-├── README.md
+├── backend/
+│    ├── app
+│    │    ├── api
+│    │    │    ├── v1
+│    │    │    │    ├── _init_.py
+│    │    │    │    ├── admin.py
+│    │    │    │    ├── ameneties.py
+│    │    │    │    ├── auth.py
+│    │    │    │    ├── places.py
+│    │    │    │    ├── reviews.py
+│    │    │    │    ├── users.py 
+│    │    │    └── _init_.py
+│    │    ├── models
+│    │    │    ├── _init_.py
+│    │    │    ├── ameneties.py
+│    │    │    ├── base_model.py
+│    │    │    ├── places.py
+│    │    │    ├── reviews.py
+│    │    │    └── users.py 
+│    │    ├── persistence
+│    │    │    ├── _init_.py
+│    │    │    ├── repository.py
+│    │    │    └── user_repository.py
+│    │    ├── services
+│    │    │    ├── _init_.py
+│    │    │    └── facade.py
+│    │    ├── _init_.py
+│    │    └── extensions.py
+│    ├── instance
+│    │    └── development.db
+│    ├── tests
+│    │    ├── _init_.py
+│    │    ├── admin.py
+│    │    ├── test_ameneties.py
+│    │    ├── test_places.py
+│    │    ├── test_relations.py
+│    │    ├── test_reviews.py
+│    │    └── test_users.py
+│    ├── config.py
+│    ├── hbnb.sql
+│    ├── mermaid.js
+│    ├── requirements.txt
+│    ├── run.py
+│    └── README.md
+└── frontend/
+     ├── static/
+     │    ├── styles.css
+     │    ├── scripts.js
+     │    └── images/
+     │         ├── logo.png
+     │         ├── icon.png
+     │         ├── favicon.ico
+     │         ├── favicon.png
+     │         ├── default-place.jpg
+     │         ├── icon_bath.png
+     │         ├── icon_bed.png
+     │         ├── icon_wifi.png
+     │         ├── place1.jpg
+     │         ├── place2.jpg
+     │         └── place3.jpg
+     └── templates/
+  	      ├── index.html
+  	      ├── login.html
+         ├── place.html
+         └── add_review.html
+
 ```
 
-## Business Logic Implementation
-Each entity is defined as a class in `models/`:
-- **User**: Represents application users.
-- **Place**: Represents rental properties.
-- **Review**: Represents user reviews.
-- **Amenity**: Represents amenities available at places.
+---
 
-Relationships between these entities are established, ensuring data integrity and proper interactions.
+## Instructions de Validation
 
-## API Endpoints
-### User Endpoints
-- `POST /api/v1/users/` - Create a new user.
-- `GET /api/v1/users/` - Retrieve all users.
-- `GET /api/v1/users/{id}` - Retrieve a specific user.
-- `PUT /api/v1/users/{id}` - Update user information.
+- Toutes les pages doivent être **valides W3C**.
+- Le projet doit être testé avec :
+  - Des utilisateurs authentifiés et non authentifiés.
+  - Des filtres appliqués correctement sur la liste des lieux.
+  - L'ajout d'avis valide uniquement pour les utilisateurs connectés.
 
-### Place Endpoints
-- `POST /api/v1/places/` - Create a new place.
-- `GET /api/v1/places/` - Retrieve all places.
-- `GET /api/v1/places/{id}` - Retrieve a specific place.
-- `PUT /api/v1/places/{id}` - Update place details.
+---
 
-### Review Endpoints
-- `POST /api/v1/reviews/` - Create a new review.
-- `GET /api/v1/reviews/` - Retrieve all reviews.
-- `GET /api/v1/reviews/{id}` - Retrieve a specific review.
-- `PUT /api/v1/reviews/{id}` - Update a review.
+## Points d'Attention
 
-### Amenity Endpoints
-- `POST /api/v1/amenities/` - Create a new amenity.
-- `GET /api/v1/amenities/` - Retrieve all amenities.
-- `GET /api/v1/amenities/{id}` - Retrieve a specific amenity.
-- `PUT /api/v1/amenities/{id}` - Update an amenity.
+- ⚠️ Assurez-vous que l'API gère correctement **CORS** pour autoriser les requêtes front-end.
+- 🧹 Respectez la structure HTML5 sémantique et une bonne organisation CSS.
+- 📱 L'application doit être **responsive** (adaptée mobile/tablette).
 
-## Testing and Validation
-- Use **Postman** or **cURL** to test API endpoints.
-- Ensure **CRUD operations** work as expected.
-- Validate **data serialization** for relationships.
-- Check for **edge cases** and handle errors gracefully.
+---
 
-## Recommended Resources
-- [Flask Documentation](https://flask.palletsprojects.com/en/stable/)
-- [Flask-RESTx Documentation](https://flask-restx.readthedocs.io/en/latest/)
-- [REST API Best Practices](https://restfulapi.net/)
-- [Python Object-Oriented Programming](https://realpython.com/python3-object-oriented-programming/)
-- [Facade Pattern in Python](https://refactoring.guru/design-patterns/facade/python/example)
+## Ressources Utiles
 
-## How to Run the Project
-### Prerequisites
-- Python 3.x installed
-- `pip install -r requirements.txt`
+- [HTML5 Documentation](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5)
+- [CSS3 Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS)
+- [JavaScript ES6](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+- [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+- [Handling Cookies in JavaScript](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
+- [Client-Side Form Validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
 
-### Running the Application
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/Noam72T/holbertonschool-hbnb.git
-   cd holbertonschool-hbnb/part2
-   ```
-2. Install dependencies:
-   ```sh
-   pip install -r requirements.txt
-   ```
-3. Start the Flask API:
-   ```sh
-   python app.py
-   ```
-4. Access API via:
-   ```sh
-   http://127.0.0.1:5000/api/v1/
-   ```
+---
 
-## Authors
+## Auteur
 
-- [@Noam](https://www.github.com/Noam72T)
 - [@Kevin](https://github.com/Kevindecastro)
+
+---
