@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Métadonnées de base -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - HBnB</title>
+    
+    <!-- Feuilles de style -->
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="icon" href="../static/images/icon.png">
+    
+    <!-- Polices Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- En-tête du site -->
+    <header>
+        <img src="../static/images/logo.png" alt="HBnB Logo" class="logo">
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="login.html" id="login-link" class="login-button active">Login</a>
+            <a href="#" id="logout-link" class="login-button" style="display: none;">Logout</a>
+        </nav>
+    </header>
+
+    <!-- Contenu principal - Formulaire de connexion -->
+    <main class="form-container">
+        <form id="login-form" class="auth-form">
+            <h2>Login to Your Account</h2>
+            
+            <!-- Champ email -->
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+            </div>
+            
+            <!-- Champ mot de passe -->
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+            </div>
+            
+            <!-- Bouton de soumission -->
+            <button type="submit" class="submit-button">Login</button>
+            
+            <!-- Message d'erreur -->
+            <div id="error-message" class="error-message hidden"></div>
+        </form>
+    </main>
+
+    <!-- Pied de page -->
+    <footer>
+        <p>© 2025 HBnB Evolution. All rights reserved.</p>
+    </footer>
+
+    <!-- Script JavaScript -->
+    <script src="../static/scripts.js"></script>
+</body>
+</html>
